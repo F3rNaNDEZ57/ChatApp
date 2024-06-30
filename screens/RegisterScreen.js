@@ -12,7 +12,7 @@ const RegisterScreen = ({ navigation }) => {
       return;
     }
     try {
-      const response = await fetch('https://422a-103-21-165-216.ngrok-free.app/register', {
+      const response = await fetch('https://6bb5-192-248-2-10.ngrok-free.app/register', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

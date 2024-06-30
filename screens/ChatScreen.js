@@ -3,7 +3,7 @@ import { View, Text, TextInput, Button, FlatList, StyleSheet } from 'react-nativ
 import io from 'socket.io-client';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const socket = io('https://422a-103-21-165-216.ngrok-free.app');
+const socket = io('https://6bb5-192-248-2-10.ngrok-free.app');
 
 const ChatScreen = ({ route, navigation }) => {
   const { recipientUsername } = route.params;
@@ -19,7 +19,7 @@ const ChatScreen = ({ route, navigation }) => {
         return;
       }
 
-      const response = await fetch(`https://422a-103-21-165-216.ngrok-free.app/chat_history/${recipientUsername}`, {
+      const response = await fetch(`https://6bb5-192-248-2-10.ngrok-free.app/chat_history/${recipientUsername}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -28,7 +28,7 @@ const ChatScreen = ({ route, navigation }) => {
       setMessages(data);
 
       // Get the current user's username
-      const userResponse = await fetch('https://422a-103-21-165-216.ngrok-free.app/current_user', {
+      const userResponse = await fetch('https://6bb5-192-248-2-10.ngrok-free.app/current_user', {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -54,8 +54,8 @@ const ChatScreen = ({ route, navigation }) => {
       navigation.replace('Login');
       return;
     }
-
-    const response = await fetch('https://422a-103-21-165-216.ngrok-free.app/send_message', {
+  
+    const response = await fetch('https://6bb5-192-248-2-10.ngrok-free.app/send_message', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -63,15 +63,23 @@ const ChatScreen = ({ route, navigation }) => {
       },
       body: JSON.stringify({ recipient: recipientUsername, message }),
     });
-
+  
     const data = await response.json();
     if (data.success) {
-      socket.emit('message', { sender: currentUsername, recipient: recipientUsername, message });
+      // Append the new message to the local state to update the UI
+      const newMessage = {
+        sender_id: currentUsername,  // Adjust according to how you identify the sender in your state
+        recipient_id: recipientUsername,
+        message: message,
+        timestamp: new Date().toISOString() // Adjust this to match how your server timestamps messages
+      };
+      setMessages([...messages, newMessage]);
       setMessage('');
     } else {
       alert(data.error || 'Message failed to send.');
     }
   };
+  
 
   return (
     <View style={styles.container}>
@@ -82,7 +90,7 @@ const ChatScreen = ({ route, navigation }) => {
           <View
             style={[
               styles.message,
-              item.sender === currentUsername ? styles.sentMessage : styles.receivedMessage,
+              item.sender_id === currentUsername ? styles.sentMessage : styles.receivedMessage,
             ]}
           >
             <Text>{item.message}</Text>

@@ -8,7 +8,7 @@ const LoginScreen = ({ navigation }) => {
 
   const handleLogin = async () => {
     try {
-      const response = await fetch('https://422a-103-21-165-216.ngrok-free.app/login', {
+      const response = await fetch('https://6bb5-192-248-2-10.ngrok-free.app/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -17,20 +17,27 @@ const LoginScreen = ({ navigation }) => {
       });
   
       const responseText = await response.text();
-      console.log('Login response text:', responseText);
-      const data = JSON.parse(responseText);
-      console.log('Login response:', data); // Log the response for debugging
-      if (data.success) {
-        await AsyncStorage.setItem('userToken', data.token);
-        navigation.replace('Search');
+      console.log('Login response text:', responseText); // Log the response text
+  
+      if (response.ok) {
+        const data = JSON.parse(responseText); // Parse the response text
+        console.log('Login response:', data); // Log the parsed response
+  
+        if (data.success) {
+          await AsyncStorage.setItem('userToken', data.token);
+          navigation.replace('Search');
+        } else {
+          alert('Login failed. Please check your credentials.');
+        }
       } else {
-        alert('Login failed. Please check your credentials.');
+        alert(`Login failed with status ${response.status}`);
       }
     } catch (error) {
-      console.error(error);
+      console.error('Network request failed', error);
+      alert('Network request failed');
     }
   };
-    
+  
 
   return (
     <View style={styles.container}>

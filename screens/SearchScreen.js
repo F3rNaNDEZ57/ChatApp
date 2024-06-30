@@ -1,10 +1,36 @@
 import React, { useState, useEffect } from 'react';
 import { View, TextInput, FlatList, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import debounce from 'lodash.debounce';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const SearchScreen = ({ navigation }) => {
   const [query, setQuery] = useState('');
   const [users, setUsers] = useState([]);
+  const [chatInstances, setChatInstances] = useState([]);
+
+  useEffect(() => {
+    const fetchChatInstances = async () => {
+      const token = await AsyncStorage.getItem('userToken');
+      if (!token) {
+        navigation.replace('Login');
+        return;
+      }
+  
+      const response = await fetch('https://your-ngrok-url.ngrok.io/chats', {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      const data = await response.json();
+      if (data && data.users) {
+        // Assuming 'users' is the array of chat instances with previous messages
+        setChatInstances(data.users);
+      }
+    };
+  
+    fetchChatInstances();
+  }, []);
+  
 
   useEffect(() => {
     if (query.length > 0) {
@@ -16,7 +42,7 @@ const SearchScreen = ({ navigation }) => {
 
   const searchUsers = debounce(async (searchQuery) => {
     try {
-      const response = await fetch(`https://422a-103-21-165-216.ngrok-free.app/search_users?query=${searchQuery}`, {
+      const response = await fetch(`https://6bb5-192-248-2-10.ngrok-free.app/search_users?query=${searchQuery}`, {
         headers: {
           'Content-Type': 'application/json',
         },
@@ -41,11 +67,14 @@ const SearchScreen = ({ navigation }) => {
         onChangeText={setQuery}
       />
       <FlatList
-        data={users}
+        data={query.length > 0 ? users : chatInstances}
         keyExtractor={(item) => item.id.toString()}
         renderItem={({ item }) => (
           <TouchableOpacity onPress={() => handleChat(item.username)}>
-            <Text style={styles.userItem}>{item.username}</Text>
+            <View style={styles.userItem}>
+              <Text style={styles.username}>{item.username}</Text>
+              <Text style={styles.lastMessage}>{item.last_message}</Text>
+            </View>
           </TouchableOpacity>
         )}
       />
@@ -70,6 +99,12 @@ const styles = StyleSheet.create({
     padding: 10,
     borderBottomWidth: 1,
     borderBottomColor: '#ccc',
+  },
+  username: {
+    fontWeight: 'bold',
+  },
+  lastMessage: {
+    color: 'gray',
   },
 });
 
