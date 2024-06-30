@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, TextInput, FlatList, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, TextInput, FlatList, Text, TouchableOpacity, StyleSheet, Button } from 'react-native';
 import debounce from 'lodash.debounce';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -15,22 +15,18 @@ const SearchScreen = ({ navigation }) => {
         navigation.replace('Login');
         return;
       }
-  
-      const response = await fetch('https://your-ngrok-url.ngrok.io/chats', {
+
+      const response = await fetch('https://032e-112-134-155-63.ngrok-free.app/', {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
       const data = await response.json();
-      if (data && data.users) {
-        // Assuming 'users' is the array of chat instances with previous messages
-        setChatInstances(data.users);
-      }
+      setChatInstances(data.users);
     };
-  
+
     fetchChatInstances();
   }, []);
-  
 
   useEffect(() => {
     if (query.length > 0) {
@@ -60,6 +56,10 @@ const SearchScreen = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
+      <Button
+        title="Back"
+        onPress={() => navigation.navigate('Login')}
+      />
       <TextInput
         style={styles.input}
         placeholder="Search users by username"
