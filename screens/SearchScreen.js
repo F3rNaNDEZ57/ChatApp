@@ -16,7 +16,7 @@ const SearchScreen = ({ navigation }) => {
 
   const searchUsers = debounce(async (searchQuery) => {
     try {
-      const response = await fetch(`https://f856-112-134-157-98.ngrok-free.app/search_users?query=${searchQuery}`, {
+      const response = await fetch(`https://422a-103-21-165-216.ngrok-free.app/search_users?query=${searchQuery}`, {
         headers: {
           'Content-Type': 'application/json',
         },

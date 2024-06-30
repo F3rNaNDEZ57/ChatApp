@@ -3,7 +3,7 @@ import { View, Text, TextInput, Button, FlatList, StyleSheet } from 'react-nativ
 import io from 'socket.io-client';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const socket = io('https://f856-112-134-157-98.ngrok-free.app');
+const socket = io('https://422a-103-21-165-216.ngrok-free.app');
 
 const ChatScreen = ({ route, navigation }) => {
   const { recipientUsername } = route.params;
@@ -19,7 +19,7 @@ const ChatScreen = ({ route, navigation }) => {
         return;
       }
 
-      const response = await fetch(`https://f856-112-134-157-98.ngrok-free.app/chat_history/${recipientUsername}`, {
+      const response = await fetch(`https://422a-103-21-165-216.ngrok-free.app/chat_history/${recipientUsername}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -28,7 +28,7 @@ const ChatScreen = ({ route, navigation }) => {
       setMessages(data);
 
       // Get the current user's username
-      const userResponse = await fetch('https://f856-112-134-157-98.ngrok-free.app/current_user', {
+      const userResponse = await fetch('https://422a-103-21-165-216.ngrok-free.app/current_user', {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -55,7 +55,7 @@ const ChatScreen = ({ route, navigation }) => {
       return;
     }
 
-    const response = await fetch('https://f856-112-134-157-98.ngrok-free.app/send_message', {
+    const response = await fetch('https://422a-103-21-165-216.ngrok-free.app/send_message', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

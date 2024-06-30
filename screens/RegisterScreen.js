@@ -12,15 +12,20 @@ const RegisterScreen = ({ navigation }) => {
       return;
     }
     try {
-      const response = await fetch('https://f856-112-134-157-98.ngrok-free.app/register', {
+      const response = await fetch('https://422a-103-21-165-216.ngrok-free.app/register', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ username, password }),
       });
-
-      const data = await response.json();
+  
+      const responseText = await response.text();
+      console.log('Register response text:', responseText);  // Log the response text
+  
+      const data = JSON.parse(responseText);  // Parse the response text
+      console.log('Register response:', data);  // Log the parsed response
+  
       if (data.success) {
         alert('Registration successful. Please log in.');
         navigation.replace('Login');
@@ -31,6 +36,7 @@ const RegisterScreen = ({ navigation }) => {
       console.error(error);
     }
   };
+  
 
   return (
     <View style={styles.container}>

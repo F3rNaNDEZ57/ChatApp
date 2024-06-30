@@ -8,7 +8,7 @@ const LoginScreen = ({ navigation }) => {
 
   const handleLogin = async () => {
     try {
-      const response = await fetch('https://f856-112-134-157-98.ngrok-free.app/login', {
+      const response = await fetch('https://422a-103-21-165-216.ngrok-free.app/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -16,7 +16,9 @@ const LoginScreen = ({ navigation }) => {
         body: JSON.stringify({ username, password }),
       });
   
-      const data = await response.json();
+      const responseText = await response.text();
+      console.log('Login response text:', responseText);
+      const data = JSON.parse(responseText);
       console.log('Login response:', data); // Log the response for debugging
       if (data.success) {
         await AsyncStorage.setItem('userToken', data.token);
@@ -27,7 +29,8 @@ const LoginScreen = ({ navigation }) => {
     } catch (error) {
       console.error(error);
     }
-  };  
+  };
+    
 
   return (
     <View style={styles.container}>
